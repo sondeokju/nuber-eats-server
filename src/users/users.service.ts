@@ -6,15 +6,14 @@ import * as jwt from 'jsonwebtoken';
 import { User } from './entities/user.entity';
 import { LoginInput } from './dtos/login.dto';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from 'src/jwt/jwt.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
-    private readonly config: ConfigService,
-  ) {
-    console.log(this.config.get('SECRET_KEY'));
-  }
+    private readonly jwtService: JwtService,
+  ) {}
 
   async createAccount({
     email,
@@ -65,11 +64,8 @@ export class UsersService {
           error: 'Wrong password',
         };
       }
-      const token = jwt.sign({ id: user.id }, this.config.get('SECRET_KEY'));
-      // const token = this.jwt.sign(
-      //   { id: user.id },
-      //   this.config.get('SECRET_KEY'),
-      // );
+
+      const token = this.jwtService.sign(user.id);
       return {
         ok: true,
         token: token,
