@@ -19,3 +19,6 @@ The Backend of Nuber Eats Clone
 - See Profile
 - Edit Profile
 - Verify Email
+
+https://randomkeygen.com/
+npx @nestjs/cli g mo items
