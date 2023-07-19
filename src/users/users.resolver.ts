@@ -47,4 +47,8 @@ export class UsersResolver {
       };
     }
   }
+
+  @Query((returns) => User)
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  me() {}
 }
