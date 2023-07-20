@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 import {
@@ -6,15 +6,13 @@ import {
   CreateAccountOutput,
 } from './dtos/create-account.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthUser } from 'src/auth/auth-user.decorator';
 
 @Resolver((of) => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
-
-  @Query((returns) => Boolean)
-  hi() {
-    return true;
-  }
 
   @Mutation((returns) => CreateAccountOutput)
   async createAccount(
@@ -48,7 +46,19 @@ export class UsersResolver {
     }
   }
 
+  // @Query((returns) => User)
+  // // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // me(@Context() context) {
+  //   if (!context.user) {
+  //     return;
+  //   } else {
+  //     return context.user;
+  //   }
+  // }
+
   @Query((returns) => User)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  me() {}
+  @UseGuards(AuthGuard)
+  me(@AuthUser() authUser: User) {
+    return authUser;
+  }
 }
